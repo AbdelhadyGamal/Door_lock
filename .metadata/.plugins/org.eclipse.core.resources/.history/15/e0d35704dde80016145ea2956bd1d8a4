@@ -1,0 +1,31 @@
+/*
+ * appl_services_states.h
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ */
+
+#ifndef APPL_SERVICES_STATES_H_
+#define APPL_SERVICES_STATES_H_
+
+#include "common_macros.h"
+#include "std_types.h"
+#include "hwal_includes.h"
+
+#define PASSWORD_FLAG_LOCATION  0x0211
+#define PASSWORD_LOCATION  0x0311
+#define PASSWORD_IS_SET 0x0F
+#define PASSWORD_IS_CLEARED 0x00
+#define PASSWORD_LENGTH 0x08
+#define ALARMPORT PORTB
+#define ALARMPORTDIRECTION DDRB
+void AlarmTurnOn() ;
+void setpassword() ;
+void getcurrentpassword(uint8 a[8]);
+uint8 TwoArrayMatch(uint8 *pass1,uint8 *pass2);
+
+
+void storePassword(uint8 *ArrPtr) ;
+void getPasswordFromUser(uint8 *a);
+
+#endif /* APPL_SERVICES_STATES_H_ */

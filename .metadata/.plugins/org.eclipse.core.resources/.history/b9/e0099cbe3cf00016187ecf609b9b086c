@@ -1,0 +1,42 @@
+/*
+ * appl_services_states.h
+
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ */
+
+#ifndef APP_H_
+#define APP_H_
+
+#include "common_macros.h"
+#include "std_types.h"
+#include "hwal_includes.h"
+
+#define PASSWORD_FLAG_LOCATION  0x0211
+#define PASSWORD_LOCATION  0x0311
+#define PASSWORD_IS_SET 0x0F
+#define PASSWORD_IS_CLEARED 0x00
+#define PASSWORD_LENGTH 0x08
+#define ALARMPORT PORTB
+#define ALARMPORTDIRECTION DDRB
+#define PASSWORDISSETQUARYCOMMMAND 0x00
+#define PASSWORDSTOREQUARYCOMMMAND 0x01
+#define PASSWORDSETFLAGQUARYCOMMMAND 0x02
+#define GETCURRENTPASSQUARYCOMMMAND 0x03
+#define ALARMTURNONCOMAND 0x04
+#define OPENDOORCOMAND 0x05
+#define CLOSEDOORCOMAND 0x06
+void APP_alarmInit();
+void APP_alarmTurnOn();
+void app_setPassword() ;
+void storePassword();
+void getcurrentpassword(uint8 a[8]);
+uint8 app_TwoArrayMatch(uint8 *pass1,uint8 *pass2);
+void PWM_Timer0_Init(unsigned char set_duty_cycle);
+
+
+void app_storePasswordQuary(uint8 *ArrPtr) ;
+void getPasswordFromUser(uint8 *a);
+
+#endif /* APP_H_ */

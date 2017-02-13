@@ -1,0 +1,100 @@
+/*
+ * main.c
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ *
+ */
+
+#include "uart.h"
+#define M1_READY 0x10
+#include "i2c.h"
+#include "External_EEPROM.h"
+#include "MC2_services_states.h"
+
+
+int main(void) {
+
+	/**
+	 * Initialization
+	 */
+
+	uint8 *command;
+	EEPROM_Init();
+	AlarmInit();
+	LCD_init();
+	PWM_Timer0_Init(250);
+	UART_init(); // initialize UART
+	EEPROM_Write_Byte(PASSWORD_FLAG_LOCATION, PASSWORD_IS_SET);
+
+	/**
+	 * Sync with MCU1
+	 */
+	while(UART_recieveByte() != M1_READY){} // wait until MC2 is ready
+	UART_sendString("Micro2 ready#"); // send the required string to MC2
+
+	LCD_clearScreen();
+	LCD_displayString("Welcome");
+
+
+
+
+
+
+
+	for (;;) {
+
+		*command = UART_recieveByte();
+		switch (*command) {
+
+		case PASSWORDISSETQUARYCOMMMAND:
+			LCD_clearScreen();
+			LCD_displayString("PASSWORDISSETQUARYCOMMMAND");
+
+			Password_is_set_quary();
+			*command=0x08;
+			break;
+
+		case PASSWORDSTOREQUARYCOMMMAND:
+			LCD_clearScreen();
+			LCD_displayString("PASSWORDSTOREQUARYCOMMMAND");
+			storePassword();
+			*command=0x08;
+			break;
+		case PASSWORDSETFLAGQUARYCOMMMAND:
+			LCD_clearScreen();
+			LCD_displayString("PASSWORDSETFLAGQUARYCOMMMAND");
+			PasswordSetFlag();
+			*command=0x08;
+			break;
+		case GETCURRENTPASSQUARYCOMMMAND:
+			LCD_clearScreen();
+			LCD_displayString("PASSWORDSETFLAGQUARYCOMMMAND");
+			getcurrentpassword();
+			*command=0x08;
+			break;
+		case ALARMTURNONCOMAND:
+			LCD_clearScreen();
+			LCD_displayString("ALARMTURNONCOMAND");
+			AlarmTurnOn();
+			*command=0x08;
+			break;
+		case OPENDOORCOMAND:
+			LCD_clearScreen();
+			LCD_displayString("OPENDOORCOMAND");
+			OpenTheDoor();
+			*command=0x08;
+			break;
+		case CLOSEDOORCOMAND:
+			LCD_clearScreen();
+			LCD_displayString("CLOSEDOORCOMAND");
+			CloseTheDoor();
+			*command=0x08;
+			break;
+		default:
+			break;
+		}
+
+	}
+}
+

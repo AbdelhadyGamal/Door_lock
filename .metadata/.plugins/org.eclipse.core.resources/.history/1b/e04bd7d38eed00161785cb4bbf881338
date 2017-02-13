@@ -1,0 +1,104 @@
+/*
+ * main.c
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ *
+ */
+
+#include "uart.h"
+#define M1_READY 0x10
+#include "i2c.h"
+#include "External_EEPROM.h"
+#include "MC2_services_states.h"
+
+int main(void) {
+
+	/**
+	 * Initialization
+	 */
+
+	uint8 *command;
+	uint8 *LastCommand;
+	EEPROM_Init();
+	AlarmInit();
+	LCD_init();
+	PWM_Timer0_Init(250);
+	UART_init(); // initialize UART
+	EEPROM_Write_Byte(PASSWORD_FLAG_LOCATION, PASSWORD_IS_SET);
+	*LastCommand=0xFF;
+	*command=0xEF;
+	/**
+	 * Sync with MCU1
+	 */
+	while (UART_recieveByte() != M1_READY) {
+	} // wait until MC2 is ready
+	LCD_clearScreen();
+	LCD_displayString("Welecome");
+	UART_sendString("Micro2 ready#"); // send the required string to MC2
+
+
+
+	for (;;) {
+
+		*command = UART_recieveByte();
+		if (*command != *LastCommand) {
+			LCD_clearScreen();
+			LCD_displayString("command match");
+			switch (*command) {
+
+			case PASSWORDISSETQUARYCOMMMAND:
+				LCD_clearScreen();
+				LCD_displayString("PASSWORDISSETQUARYCOMMMAND");
+
+				Password_is_set_quary();
+
+				*LastCommand =*command;
+				break;
+
+			case PASSWORDSTOREQUARYCOMMMAND:
+				LCD_clearScreen();
+				LCD_displayString("PASSWORDSTOREQUARYCOMMMAND");
+				storePassword();
+				*LastCommand =*command;
+				break;
+			case PASSWORDSETFLAGQUARYCOMMMAND:
+				LCD_clearScreen();
+				LCD_displayString("PASSWORDSETFLAGQUARYCOMMMAND");
+				PasswordSetFlag();
+				*LastCommand =*command;
+				break;
+			case GETCURRENTPASSQUARYCOMMMAND:
+				LCD_clearScreen();
+				LCD_displayString("PASSWORDSETFLAGQUARYCOMMMAND");
+				getcurrentpassword();
+				*LastCommand =*command;
+				break;
+			case ALARMTURNONCOMAND:
+				LCD_clearScreen();
+				LCD_displayString("ALARMTURNONCOMAND");
+				AlarmTurnOn();
+				*LastCommand =*command;
+				break;
+			case OPENDOORCOMAND:
+				LCD_clearScreen();
+				LCD_displayString("OPENDOORCOMAND");
+				OpenTheDoor();
+				*LastCommand =*command;
+				break;
+			case CLOSEDOORCOMAND:
+				LCD_clearScreen();
+				LCD_displayString("CLOSEDOORCOMAND");
+				CloseTheDoor();
+				*LastCommand =*command;
+				break;
+			default:
+				break;
+			}
+		}
+		LCD_clearScreen();
+		LCD_displayString("command domatch");
+
+	}
+}
+

@@ -1,0 +1,278 @@
+/*
+ * appl_services_states.c
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ */
+/* ---------------------------------------------------------------------------------------------------
+ [FILE NAME]: <appl_services_states.c>
+ [AUTHOR(S)]: <Abdelhady>
+ [DATE CREATED]: <Jan 28, 2017>
+ [DESCRIPTION]: <Contain the main application services and states of the door lock system>
+ ---------------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------INCLUDES -----------------------------------------------*/
+
+#include "appl_services_states.h"
+
+/*-------------------------------------FUNCTION Definitions ----------------------------------------*/
+/* ---------------------------------------------------------------------------------------------------------------
+ [Function Name] :setpassword
+ [Description] :This function is responsible of setting the password for the first time and
+ storing it in the memory by asking the user to Enter New password Of 8 bit and confirm it
+
+ [Returns] :void
+ ---------------------------------------------------------------------------------------------------------------*/
+
+void setpassword() {
+
+	/**
+	 * PassArrayFirst is an array of 8 elements of size 8 bit
+	 * to store the first entered password
+	 */
+	uint8 PassArrayFirst[8];
+	/**
+	 * PassArrayConfirmation is an array of 8 elements of size 8 bit
+	 * to store the confirmed password to be compared with the PassArrayFirst
+	 */
+	uint8 PassArrayConfirmation[8];
+	/**
+	 * Loop_counter is a 8 bit variable used within the local for loops to count to eight
+	 */
+	uint8 Loop_counter = 0;
+	/**
+	 error
+	 */
+	char mystr[2] = "a";
+
+	uint8 password_doesnot_matches = 0;
+	/**
+	 * this do while loop is to ensure that the two passwords entered by the user is identical
+	 * it
+	 */
+
+	do {
+		LCD_clearScreen();
+		LCD_displayString("E New Pass");
+
+		for (Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+			PassArrayFirst[Loop_counter] = KeyPad_getPressedKey();
+			LCD_goToRowColumn(1, Loop_counter + 1);
+			itoa(PassArrayFirst[Loop_counter], mystr, 10);
+			LCD_displayString(mystr);
+			_delay_ms(200);
+
+		}
+
+		LCD_clearScreen();
+
+		LCD_displayString("confirm Pass");
+
+		for (Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+			PassArrayConfirmation[Loop_counter] = KeyPad_getPressedKey();
+			LCD_goToRowColumn(1, Loop_counter + 1);
+
+			itoa(PassArrayConfirmation[Loop_counter], mystr, 10);
+			LCD_displayString(mystr);
+			_delay_ms(200);
+
+		}
+		password_doesnot_matches = 0;
+		for (Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+			if (PassArrayConfirmation[Loop_counter]
+					!= PassArrayFirst[Loop_counter]) {
+				password_doesnot_matches = 1;
+
+			}
+		}
+
+		if (password_doesnot_matches) {
+			LCD_clearScreen();
+			LCD_displayString("the pass doesn't match");
+			LCD_goToRowColumn(1, 0);
+			LCD_displayString("please enter new pass that match");
+		}
+
+	} while (password_doesnot_matches);
+
+	LCD_clearScreen();
+	LCD_displayString("Password is set :) ");
+	storePassword(PassArrayFirst);
+	_delay_ms(2000);
+}
+/* ---------------------------------------------------------------------------------------------------------------
+ [Function Name] :storePassword
+ [Description] :This function is responsible of storing the password in the EEPROM at the
+ location "PASSWORD_LOCATION" and setting the flag to "PASSWORD_FLAG_LOCATION" to show that
+ the password is already set
+ [Args] : uint8 *Pointer to array of Elements that contains the password to be stored
+ [in] uint8 *ArrPtr:
+ As an output Arg, this Argshall indicate a_functionArgDescription4
+ [Returns] :void
+
+ ---------------------------------------------------------------------------------------------------------------*/
+uint8 DoesTheUserHaveThePassword() {
+	/**
+	 * PassArrayentered is an array of 8 elements of size 8 bit
+	 * to store the password Entered by user to be compared with the password stored in
+	 * the system
+	 */
+	uint8 PassArrayentered[8];
+	/**
+	 * PassArrayentered is an array of 8 elements of size 8 bit
+	 * to store the password Entered by user to be compared with the password stored in
+	 * the system
+	 */
+	uint8 PassArraystored[8];
+	/**
+	 * Loop_counter is a 8 bit variable used within the local for loops to count to eight
+	 */
+	uint8 Loop_counter = 0;
+	/**
+	 error
+	 */
+	char mystr[2] = "a";
+
+	uint8 password_doesnot_matches = 0;
+	/**
+	 * this do while loop is to ensure that the two passwords entered by the user is identical
+	 * it
+	 */
+	getcurrentpassword(PassArraystored);
+
+	do {
+
+		getPasswordFromUser(PassArrayentered);
+		if (TwoPassMatch(PassArrayentered, PassArraystored)) {
+			return 1;
+			LCD_clearScreen();
+			LCD_displayString("Pass is correct");
+			_delay_ms(1000);
+
+		}
+		LCD_clearScreen();
+		LCD_displayString("the pass doesn't match");
+		Loop_counter++;
+		_delay_ms(1000);
+	} while (Loop_counter < 3);
+
+	/**
+	 * password doesn't match for three times
+	 * so the alarm should be turned on
+	 */
+	return 0;
+}
+uint8 TwoPassMatch(uint8 *pass1, uint8 *pass2) {
+	uint8 result = 1;
+	for (uint8 Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+		if (*(pass1 + Loop_counter) != *(pass2 + Loop_counter)) {
+
+			result = 0;
+		}
+
+	}
+	return result;
+}
+void storePassword(uint8 *ArrPtr) {
+	/**
+	 * this for loop is to loop the 8 char of the password to be stored in the
+	 */
+	for (uint8 Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+		EEPROM_Write_Byte(PASSWORD_LOCATION + Loop_counter,
+				ArrPtr[Loop_counter]);
+		_delay_ms(50);
+
+	}
+	EEPROM_Write_Byte(PASSWORD_FLAG_LOCATION, PASSWORD_IS_SET);
+}
+/* ---------------------------------------------------------------------------------------------------------------
+ [Function Name] :AlarmTurnOn
+ [Description] :This function is responsible turning on the alarm when it is called
+ [Args] :Null
+ [in] a_functionArgType1 a_functionArgName1:
+ This Argshall indicate a_functionArgDescription1
+ [out] a_functionArgType2 a_functionArgName2:
+ This Argshall indicate a_functionArgDescription2
+ [in/out] a_functionArgType3 a_functionArgName3:
+ As an input Arg, this Argshall indicate a_functionArgDescription3
+ As an output Arg, this Argshall indicate a_functionArgDescription4
+ [Returns] :${return_type}
+ This return shall indicate var_func_returnt_description
+ ---------------------------------------------------------------------------------------------------------------*/
+void AlarmTurnOn() {
+
+}
+
+/** ---------------------------------------------------------------------------------------------------------------
+ [Function Name] :OpenTheDoor
+ [Description] :This function is responsible turning on the alarm when it is called
+ [Args] :Null
+ [in] a_functionArgType1 a_functionArgName1:
+ This Argshall indicate a_functionArgDescription1
+ [out] a_functionArgType2 a_functionArgName2:
+ This Argshall indicate a_functionArgDescription2
+ [in/out] a_functionArgType3 a_functionArgName3:
+ As an input Arg, this Argshall indicate a_functionArgDescription3
+ As an output Arg, this Argshall indicate a_functionArgDescription4
+ [Returns] :${return_type}
+ This return shall indicate var_func_returnt_description
+ ---------------------------------------------------------------------------------------------------------------*/
+void OpenTheDoor() {
+	uint8 HasThePassword = 0;
+
+//	HasThePassword = checkOldPassword_ALARM();
+
+	if (HasThePassword) {
+
+	}
+
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ [Function Name] :OpenTheDoor
+ [Description] :This function is responsible turning on the alarm when it is called
+ [Args] :Null
+ [in] a_functionArgType1 a_functionArgName1:
+ This Argshall indicate a_functionArgDescription1
+ [out] a_functionArgType2 a_functionArgName2:
+ This Argshall indicate a_functionArgDescription2
+ [in/out] a_functionArgType3 a_functionArgName3:
+ As an input Arg, this Argshall indicate a_functionArgDescription3
+ As an output Arg, this Argshall indicate a_functionArgDescription4
+ [Returns] :${return_type}
+ This return shall indicate var_func_returnt_description
+ ---------------------------------------------------------------------------------------------------------------*/
+
+void getcurrentpassword(uint8 *a) {
+
+	for (uint8 Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+		EEPROM_Read_Byte(PASSWORD_LOCATION + Loop_counter, a[Loop_counter]);
+	}
+}
+void getPasswordFromUser(uint8 *a) {
+
+	LCD_clearScreen();
+	LCD_displayString("Enter your Pass");
+	uint8 mystr[2] = "a";
+	uint8 astric[2] = "*";
+
+	for (uint8 Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+		a[Loop_counter] = KeyPad_getPressedKey();
+		LCD_goToRowColumn(1, Loop_counter + 1);
+		itoa(a[Loop_counter], mystr, 10);
+		LCD_displayString(mystr);
+		_delay_ms(200);
+
+		LCD_goToRowColumn(1, Loop_counter + 1);
+		LCD_displayString(astric);
+		_delay_ms(200);
+
+	}
+	LCD_clearScreen();
+	LCD_displayString("Pass entered");
+}

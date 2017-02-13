@@ -1,0 +1,51 @@
+/*
+ * main.c
+ *
+ *  Created on: Jan 28, 2017
+ *      Author: Abdelhady
+ *
+ */
+
+#include "lcd.h"
+#include "uart.h"
+#include "Keypad.h"
+#include "i2c.h"
+#include "External_EEPROM.h"
+#include "appl_services_states.h"
+int main(int argc, char **argv) {
+
+	EEPROM_Init();
+	LCD_init();
+
+	_delay_ms(1000);
+
+	setpassword();
+
+	//DoesTheUserHaveThePassword();
+
+	uint8 mybuffer = 0;
+    uint8 arr[8];
+	uint8 Loop_counter = 0;
+
+	char mystr[2] = "a";
+    getcurrentpassword(arr);
+
+	LCD_clearScreen();
+
+	for (Loop_counter = 0; Loop_counter < 8; Loop_counter++) {
+
+		//EEPROM_Read_Byte((0x0311 + Loop_counter), &mybuffer);
+		LCD_goToRowColumn(1, Loop_counter + 1);
+
+		itoa(mybuffer, mystr, 10);
+
+		//LCD_displayCharacter(mystr);
+		LCD_displayString(mystr);
+		_delay_ms(300);
+	}
+
+	for (;;) {
+
+	}
+}
+

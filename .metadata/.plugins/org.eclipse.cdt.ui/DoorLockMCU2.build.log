@@ -1,0 +1,102 @@
+14:00:48 **** Incremental Build of configuration Debug for project DoorLockMCU2 ****
+make all 
+Building file: ../Keypad.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"Keypad.d" -MT"Keypad.o" -c -o "Keypad.o" "../Keypad.c"
+In file included from ../micro_config.h:19,
+                 from ../keypad.h:12,
+                 from ../Keypad.c:8:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+Finished building: ../Keypad.c
+ 
+Building file: ../app.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"app.d" -MT"app.o" -c -o "app.o" "../app.c"
+In file included from ../micro_config.h:19,
+                 from ../i2c.h:12,
+                 from ../external_eeprom.h:15,
+                 from ../hwal_includes.h:11,
+                 from ../app.h:13,
+                 from ../app.c:16:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+../app.c: In function 'APP_storePassword':
+../app.c:77: warning: unused variable 'Loop_counter'
+Finished building: ../app.c
+ 
+Building file: ../external_eeprom.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"external_eeprom.d" -MT"external_eeprom.o" -c -o "external_eeprom.o" "../external_eeprom.c"
+In file included from ../micro_config.h:19,
+                 from ../i2c.h:12,
+                 from ../external_eeprom.h:15,
+                 from ../external_eeprom.c:7:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+Finished building: ../external_eeprom.c
+ 
+Building file: ../i2c.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"i2c.d" -MT"i2c.o" -c -o "i2c.o" "../i2c.c"
+In file included from ../micro_config.h:19,
+                 from ../i2c.h:12,
+                 from ../i2c.c:7:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+Finished building: ../i2c.c
+ 
+Building file: ../lcd.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"lcd.d" -MT"lcd.o" -c -o "lcd.o" "../lcd.c"
+In file included from ../micro_config.h:19,
+                 from ../lcd.h:13,
+                 from ../lcd.c:8:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+../lcd.c: In function 'LCD_intgerToString':
+../lcd.c:160: warning: implicit declaration of function 'itoa'
+Finished building: ../lcd.c
+ 
+Building file: ../mc2_main.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"mc2_main.d" -MT"mc2_main.o" -c -o "mc2_main.o" "../mc2_main.c"
+In file included from ../micro_config.h:19,
+                 from ../uart.h:11,
+                 from ../mc2_main.c:9:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+../mc2_main.c: In function 'main':
+../mc2_main.c:37: warning: pointer targets in passing argument 1 of 'UART_sendString' differ in signedness
+Finished building: ../mc2_main.c
+ 
+Building file: ../uart.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=8000000UL -MMD -MP -MF"uart.d" -MT"uart.o" -c -o "uart.o" "../uart.c"
+In file included from ../micro_config.h:19,
+                 from ../uart.h:11,
+                 from ../uart.c:8:
+c:/winavr-20100110/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+Finished building: ../uart.c
+ 
+Building target: DoorLockMCU2.elf
+Invoking: AVR C Linker
+avr-gcc -Wl,-Map,DoorLockMCU2.map -mmcu=atmega16 -o "DoorLockMCU2.elf"  ./Keypad.o ./app.o ./external_eeprom.o ./i2c.o ./lcd.o ./mc2_main.o ./uart.o   
+Finished building target: DoorLockMCU2.elf
+ 
+Invoking: AVR Create Extended Listing
+avr-objdump -h -S DoorLockMCU2.elf  >"DoorLockMCU2.lss"
+Finished building: DoorLockMCU2.lss
+ 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega16 DoorLockMCU2.elf
+AVR Memory Usage
+----------------
+Device: atmega16
+
+Program:   12386 bytes (75.6% Full)
+(.text + .data + .bootloader)
+
+Data:        332 bytes (32.4% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+14:00:52 Build Finished (took 3s.583ms)
+
